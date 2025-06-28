@@ -47,11 +47,18 @@ SSHPlus supports all OpenWrt-compatible CPU architectures, including:
 ---
 
 ## 📥 Installation
-Run this single command in your OpenWrt terminal:
+Run this single command from the PeDitX repository in your OpenWrt terminal:
 
 ```bash
-rm -f *.sh && wget https://raw.githubusercontent.com/peditx/SshPlus/refs/heads/main/Files/install_sshplus.sh && sh install_sshplus.sh
+rm -f *.sh && wget https://raw.githubusercontent.com/peditx/SshPlus-/refs/heads/main/Files/install_sshplus.sh && sh install_sshplus.sh
 
+```
+
+### Uninstall
+Run the following if you wish to remove SSHPlus:
+
+```bash
+rm -f uninstall_sshplus.sh && wget https://raw.githubusercontent.com/peditx/SshPlus-/refs/heads/main/Files/uninstall_sshplus.sh && sh uninstall_sshplus.sh
 ```
 
 ---
@@ -71,8 +78,10 @@ rm -f *.sh && wget https://raw.githubusercontent.com/peditx/SshPlus/refs/heads/m
    - Edit configurations
    - Monitor active connections
 
-4. **Auto-Service Creation**  
+4. **Auto-Service Creation**
    Persistent connections survive reboots via init.d service
+5. **Flexible Authentication**
+   Choose between password or private key when connecting
 
 ---
 

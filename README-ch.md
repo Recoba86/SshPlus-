@@ -46,11 +46,18 @@ SSHPlus 支持所有与 OpenWrt 兼容的 CPU 架构，包括：
 ---
 
 ## 📥 安装  
-在 OpenWrt 终端中运行以下命令：  
+在 OpenWrt 终端中运行以下来自 PeDitX 仓库的命令：
 
 ```bash
-rm -f *.sh && wget https://raw.githubusercontent.com/peditx/SshPlus/refs/heads/main/Files/install_sshplus.sh && sh install_sshplus.sh
+rm -f *.sh && wget https://raw.githubusercontent.com/peditx/SshPlus-/refs/heads/main/Files/install_sshplus.sh && sh install_sshplus.sh
 
+```
+
+### 卸载
+若要移除 SSHPlus，请运行：
+
+```bash
+rm -f uninstall_sshplus.sh && wget https://raw.githubusercontent.com/peditx/SshPlus-/refs/heads/main/Files/uninstall_sshplus.sh && sh uninstall_sshplus.sh
 ```
 
 ---
@@ -71,8 +78,10 @@ rm -f *.sh && wget https://raw.githubusercontent.com/peditx/SshPlus/refs/heads/m
    - 编辑配置  
    - 监控活动连接  
 
-4. **自动创建服务**  
-   通过 init.d 服务确保连接在系统重启后仍然保持稳定  
+4. **自动创建服务**
+   通过 init.d 服务确保连接在系统重启后仍然保持稳定
+5. **灵活的身份验证**
+   可选择密码或私钥方式连接
 
 ---
 
