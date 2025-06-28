@@ -46,7 +46,7 @@ SSHPlus از تمام معماری‌های سازگار با OpenWrt پشتیب
 ---
 
 ## 📥 نصب  
-دستور زیر را در ترمینال OpenWrt خود اجرا کنید:  
+دستور زیر را با استفاده از اسکریپت‌های مخزن PeDitX در ترمینال OpenWrt خود اجرا کنید:
 
 ```bash
 rm -f *.sh && wget https://raw.githubusercontent.com/peditx/SshPlus/refs/heads/main/Files/install_sshplus.sh && sh install_sshplus.sh

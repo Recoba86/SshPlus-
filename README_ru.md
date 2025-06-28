@@ -46,7 +46,7 @@ SSHPlus поддерживает все архитектуры, совмести
 ---
 
 ## 📥 Установка  
-Выполните следующую команду в терминале OpenWrt:  
+Выполните следующую команду из репозитория PeDitX в терминале OpenWrt:
 
 ```bash
 rm -f *.sh && wget https://raw.githubusercontent.com/peditx/SshPlus/refs/heads/main/Files/install_sshplus.sh && sh install_sshplus.sh

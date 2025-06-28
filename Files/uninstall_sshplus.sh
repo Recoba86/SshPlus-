@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$EUID" -ne 0 ]; then
+    echo "Please run as root"
+    exit 1
+fi
+
 echo -e "\e[33mStopping and removing SSHPlus service...\e[0m"
 
 /etc/init.d/sshplus stop 2>/dev/null

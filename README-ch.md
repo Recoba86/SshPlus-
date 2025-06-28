@@ -46,7 +46,7 @@ SSHPlus 支持所有与 OpenWrt 兼容的 CPU 架构，包括：
 ---
 
 ## 📥 安装  
-在 OpenWrt 终端中运行以下命令：  
+在 OpenWrt 终端中运行以下来自 PeDitX 仓库的命令：
 
 ```bash
 rm -f *.sh && wget https://raw.githubusercontent.com/peditx/SshPlus/refs/heads/main/Files/install_sshplus.sh && sh install_sshplus.sh
