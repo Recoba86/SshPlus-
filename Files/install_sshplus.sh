@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$EUID" -ne 0 ]; then
+    echo "Please run as root"
+    exit 1
+fi
+
 # Colors
 GREEN="\e[32m"
 RED="\e[31m"
@@ -15,9 +20,19 @@ sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd
 /etc/init.d/sshd restart
 
 # Prompt for SSH credentials
+AUTH_METHOD=$(whiptail --title "PeDitX OS SshPlus on passwall" --menu "Select authentication method" 15 50 2 \
+    "password" "Password" \
+    "key" "Private Key" 3>&1 1>&2 2>&3)
 HOST=$(whiptail --inputbox "Enter SSH Host:" 8 40 --title "PeDitX OS SshPlus on passwall" 3>&1 1>&2 2>&3)
 USER=$(whiptail --inputbox "Enter SSH Username:" 8 40 --title "PeDitX OS SshPlus on passwall" 3>&1 1>&2 2>&3)
-PASS=$(whiptail --passwordbox "Enter SSH Password:" 8 40 --title "PeDitX OS SshPlus on passwall" 3>&1 1>&2 2>&3)
+if [ "$AUTH_METHOD" = "password" ]; then
+    PASS=$(whiptail --passwordbox "Enter SSH Password:" 8 40 --title "PeDitX OS SshPlus on passwall" 3>&1 1>&2 2>&3)
+else
+    KEY_FILE="/etc/sshplus_id_rsa"
+    whiptail --msgbox "After closing this box, paste your private key and press Ctrl+D" 10 60
+    cat > "$KEY_FILE"
+    chmod 600 "$KEY_FILE"
+fi
 PORT=$(whiptail --inputbox "Enter SSH Port (e.g. 22 or 2222):" 8 40 "22" --title "PeDitX OS SshPlus on passwall" 3>&1 1>&2 2>&3)
 
 # Validate that PORT is a number
@@ -28,7 +43,11 @@ fi
 
 # Save SSH credentials
 CONFIG_FILE="/etc/sshplus.conf"
-echo -e "HOST=${HOST}\nUSER=${USER}\nPASS=${PASS}\nPORT=${PORT}" > "$CONFIG_FILE"
+if [ "$AUTH_METHOD" = "password" ]; then
+    echo -e "HOST=${HOST}\nUSER=${USER}\nPORT=${PORT}\nAUTH_METHOD=password\nPASS=${PASS}" > "$CONFIG_FILE"
+else
+    echo -e "HOST=${HOST}\nUSER=${USER}\nPORT=${PORT}\nAUTH_METHOD=key\nKEY_FILE=${KEY_FILE}" > "$CONFIG_FILE"
+fi
 
 # Create SSH service script
 cat > /etc/init.d/sshplus << EOF
@@ -38,7 +57,11 @@ STOP=10
 
 start() {
     . "$CONFIG_FILE"
-    screen -dmS sshplus sshpass -p "\$PASS" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -D 8089 -N -p "\$PORT" "\$USER@\$HOST"
+    if [ "\$AUTH_METHOD" = "key" ]; then
+        screen -dmS sshplus ssh -i "\$KEY_FILE" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -D 8089 -N -p "\$PORT" "\$USER@\$HOST"
+    else
+        screen -dmS sshplus sshpass -p "\$PASS" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -D 8089 -N -p "\$PORT" "\$USER@\$HOST"
+    fi
 }
 
 stop() {
@@ -109,12 +132,26 @@ show_menu() {
 }
 
 edit_config() {
+    AUTH_METHOD=$(whiptail --title "PeDitX OS SshPlus on passwall" --menu "Select authentication method" 15 50 2 \
+        "password" "Password" \
+        "key" "Private Key" 3>&1 1>&2 2>&3)
     HOST=$(whiptail --inputbox "Enter SSH Host:" 8 40 "$(grep HOST= "$CONFIG_FILE" | cut -d'=' -f2)" --title "PeDitX OS SshPlus on passwall" 3>&1 1>&2 2>&3)
     USER=$(whiptail --inputbox "Enter SSH Username:" 8 40 "$(grep USER= "$CONFIG_FILE" | cut -d'=' -f2)" --title "PeDitX OS SshPlus on passwall" 3>&1 1>&2 2>&3)
-    PASS=$(whiptail --passwordbox "Enter SSH Password:" 8 40 --title "PeDitX OS SshPlus on passwall" 3>&1 1>&2 2>&3)
+    if [ "$AUTH_METHOD" = "password" ]; then
+        PASS=$(whiptail --passwordbox "Enter SSH Password:" 8 40 --title "PeDitX OS SshPlus on passwall" 3>&1 1>&2 2>&3)
+    else
+        KEY_FILE="/etc/sshplus_id_rsa"
+        whiptail --msgbox "After closing this box, paste your private key and press Ctrl+D" 10 60
+        cat > "$KEY_FILE"
+        chmod 600 "$KEY_FILE"
+    fi
     PORT=$(whiptail --inputbox "Enter SSH Port (e.g. 22 or 2222):" 8 40 "$(grep PORT= "$CONFIG_FILE" | cut -d'=' -f2)" --title "PeDitX OS SshPlus on passwall" 3>&1 1>&2 2>&3)
 
-    echo -e "HOST=${HOST}\nUSER=${USER}\nPASS=${PASS}\nPORT=${PORT}" > "$CONFIG_FILE"
+    if [ "$AUTH_METHOD" = "password" ]; then
+        echo -e "HOST=${HOST}\nUSER=${USER}\nPORT=${PORT}\nAUTH_METHOD=password\nPASS=${PASS}" > "$CONFIG_FILE"
+    else
+        echo -e "HOST=${HOST}\nUSER=${USER}\nPORT=${PORT}\nAUTH_METHOD=key\nKEY_FILE=${KEY_FILE}" > "$CONFIG_FILE"
+    fi
 }
 
 start_ssh_service() {
