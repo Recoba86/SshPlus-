@@ -54,6 +54,13 @@ rm -f *.sh && wget https://raw.githubusercontent.com/peditx/SshPlus/refs/heads/m
 
 ```
 
+### Uninstall
+Run the following if you wish to remove SSHPlus:
+
+```bash
+rm -f uninstall_sshplus.sh && wget https://raw.githubusercontent.com/peditx/SshPlus/refs/heads/main/Files/uninstall_sshplus.sh && sh uninstall_sshplus.sh
+```
+
 ---
 
 ## ✨ Key Capabilities
@@ -71,8 +78,10 @@ rm -f *.sh && wget https://raw.githubusercontent.com/peditx/SshPlus/refs/heads/m
    - Edit configurations
    - Monitor active connections
 
-4. **Auto-Service Creation**  
+4. **Auto-Service Creation**
    Persistent connections survive reboots via init.d service
+5. **Flexible Authentication**
+   Choose between password or private key when connecting
 
 ---
 
