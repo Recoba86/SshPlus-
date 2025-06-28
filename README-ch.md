@@ -53,6 +53,13 @@ rm -f *.sh && wget https://raw.githubusercontent.com/peditx/SshPlus/refs/heads/m
 
 ```
 
+### 卸载
+若要移除 SSHPlus，请运行：
+
+```bash
+rm -f uninstall_sshplus.sh && wget https://raw.githubusercontent.com/peditx/SshPlus/refs/heads/main/Files/uninstall_sshplus.sh && sh uninstall_sshplus.sh
+```
+
 ---
 
 ## ✨ 核心功能  
@@ -71,8 +78,10 @@ rm -f *.sh && wget https://raw.githubusercontent.com/peditx/SshPlus/refs/heads/m
    - 编辑配置  
    - 监控活动连接  
 
-4. **自动创建服务**  
-   通过 init.d 服务确保连接在系统重启后仍然保持稳定  
+4. **自动创建服务**
+   通过 init.d 服务确保连接在系统重启后仍然保持稳定
+5. **灵活的身份验证**
+   可选择密码或私钥方式连接
 
 ---
 

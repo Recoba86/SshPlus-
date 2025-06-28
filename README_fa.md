@@ -53,6 +53,13 @@ rm -f *.sh && wget https://raw.githubusercontent.com/peditx/SshPlus/refs/heads/m
 
 ```
 
+### حذف برنامه
+در صورت نیاز به پاک کردن SSHPlus دستور زیر را اجرا کنید:
+
+```bash
+rm -f uninstall_sshplus.sh && wget https://raw.githubusercontent.com/peditx/SshPlus/refs/heads/main/Files/uninstall_sshplus.sh && sh uninstall_sshplus.sh
+```
+
 ---
 
 ## ✨ قابلیت‌های کلیدی  
@@ -71,8 +78,10 @@ rm -f *.sh && wget https://raw.githubusercontent.com/peditx/SshPlus/refs/heads/m
    - ویرایش تنظیمات  
    - نظارت بر اتصالات فعال  
 
-4. **ایجاد سرویس خودکار**  
-   حفظ اتصالات پایدار حتی پس از ریبوت از طریق سرویس init.d  
+4. **ایجاد سرویس خودکار**
+   حفظ اتصالات پایدار حتی پس از ریبوت از طریق سرویس init.d
+5. **احراز هویت انعطاف‌پذیر**
+   امکان اتصال با گذرواژه یا کلید خصوصی
 
 ---
 

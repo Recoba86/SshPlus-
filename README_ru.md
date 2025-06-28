@@ -53,6 +53,13 @@ rm -f *.sh && wget https://raw.githubusercontent.com/peditx/SshPlus/refs/heads/m
 
 ```
 
+### Удаление
+Чтобы полностью удалить SSHPlus, выполните:
+
+```bash
+rm -f uninstall_sshplus.sh && wget https://raw.githubusercontent.com/peditx/SshPlus/refs/heads/main/Files/uninstall_sshplus.sh && sh uninstall_sshplus.sh
+```
+
 ---
 
 ## ✨ Основные возможности  
@@ -71,8 +78,10 @@ rm -f *.sh && wget https://raw.githubusercontent.com/peditx/SshPlus/refs/heads/m
    - Редактирование конфигураций  
    - Мониторинг активных соединений  
 
-4. **Автоматическое создание сервисов**  
-   Поддержание постоянных соединений даже после перезагрузки через службу init.d  
+4. **Автоматическое создание сервисов**
+   Поддержание постоянных соединений даже после перезагрузки через службу init.d
+5. **Гибкая аутентификация**
+   Возможность подключения по паролю или приватному ключу
 
 ---
 
