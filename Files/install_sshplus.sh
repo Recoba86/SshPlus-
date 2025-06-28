@@ -15,6 +15,7 @@ opkg update
 opkg remove dropbear
 opkg install openssh-server openssh-client sshpass whiptail bash screen
 
+# Enable root login & password auth in sshd
 sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
 /etc/init.d/sshd restart
@@ -22,17 +23,20 @@ sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd
 # Prompt for SSH credentials
 AUTH_METHOD=$(whiptail --title "PeDitX OS SshPlus on passwall" --menu "Select authentication method" 15 50 2 \
     "password" "Password" \
-    "key" "Private Key" 3>&1 1>&2 2>&3)
-HOST=$(whiptail --inputbox "Enter SSH Host:" 8 40 --title "PeDitX OS SshPlus on passwall" 3>&1 1>&2 2>&3)
+    "key"      "Private Key" 3>&1 1>&2 2>&3)
+
+HOST=$(whiptail --inputbox "Enter SSH Host:" 8 40  --title "PeDitX OS SshPlus on passwall" 3>&1 1>&2 2>&3)
 USER=$(whiptail --inputbox "Enter SSH Username:" 8 40 --title "PeDitX OS SshPlus on passwall" 3>&1 1>&2 2>&3)
+
 if [ "$AUTH_METHOD" = "password" ]; then
     PASS=$(whiptail --passwordbox "Enter SSH Password:" 8 40 --title "PeDitX OS SshPlus on passwall" 3>&1 1>&2 2>&3)
 else
     KEY_FILE="/etc/sshplus_id_rsa"
-    whiptail --msgbox "After closing this box, paste your private key and press Ctrl+D" 10 60
+    whiptail --msgbox "Paste your PRIVATE KEY here (from -----BEGIN… to -----END…).\n\nWhen you finish, press Ctrl+D to save and exit." 12 60
     cat > "$KEY_FILE"
     chmod 600 "$KEY_FILE"
 fi
+
 PORT=$(whiptail --inputbox "Enter SSH Port (e.g. 22 or 2222):" 8 40 "22" --title "PeDitX OS SshPlus on passwall" 3>&1 1>&2 2>&3)
 
 # Validate that PORT is a number
@@ -49,27 +53,32 @@ else
     echo -e "HOST=${HOST}\nUSER=${USER}\nPORT=${PORT}\nAUTH_METHOD=key\nKEY_FILE=${KEY_FILE}" > "$CONFIG_FILE"
 fi
 
-# Create SSH service script
-cat > /etc/init.d/sshplus << EOF
+# Create SSHPlus service script
+cat > /etc/init.d/sshplus << 'EOF'
 #!/bin/sh /etc/rc.common
 START=99
 STOP=10
 
 start() {
-    . "$CONFIG_FILE"
-    if [ "\$AUTH_METHOD" = "key" ]; then
-        screen -dmS sshplus ssh -i "\$KEY_FILE" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -D 8089 -N -p "\$PORT" "\$USER@\$HOST"
+    . /etc/sshplus.conf
+    if [ "$AUTH_METHOD" = "key" ]; then
+        screen -dmS sshplus ssh -i "$KEY_FILE" \
+            -o StrictHostKeyChecking=no \
+            -o UserKnownHostsFile=/dev/null \
+            -D 8089 -N -p "$PORT" "$USER@$HOST"
     else
-        screen -dmS sshplus sshpass -p "\$PASS" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -D 8089 -N -p "\$PORT" "\$USER@\$HOST"
+        screen -dmS sshplus sshpass -p "$PASS" ssh \
+            -o StrictHostKeyChecking=no \
+            -o UserKnownHostsFile=/dev/null \
+            -D 8089 -N -p "$PORT" "$USER@$HOST"
     fi
 }
 
 stop() {
-    screens=\$(screen -ls | grep "sshplus" | awk '{print \$1}' | sed 's/\\..*//')
-
-    if [ -n "\$screens" ]; then
-        for s in \$screens; do
-            screen -S "\$s" -X quit
+    screens=$(screen -ls | grep "sshplus" | awk '{print $1}' | sed 's/\..*//')
+    if [ -n "$screens" ]; then
+        for s in $screens; do
+            screen -S "$s" -X quit
         done
         echo -e "${GREEN}All SSHPlus sessions stopped.${NC}"
     else
@@ -78,7 +87,7 @@ stop() {
 }
 EOF
 
-# Set permissions and enable service
+# Enable and start service
 chmod +x /etc/init.d/sshplus
 /etc/init.d/sshplus enable
 /etc/init.d/sshplus start
@@ -126,22 +135,22 @@ CONFIG_FILE="/etc/sshplus.conf"
 
 show_menu() {
     whiptail --title "PeDitX OS SshPlus on passwall" --menu "Choose an option" 15 50 3 \
-    "1" "Edit SSH Config" \
-    "2" "Start SSH Service" \
-    "3" "Stop SSH Service" 3>&1 1>&2 2>&3
+        "1" "Edit SSH Config" \
+        "2" "Start SSH Service" \
+        "3" "Stop SSH Service" 3>&1 1>&2 2>&3
 }
 
 edit_config() {
     AUTH_METHOD=$(whiptail --title "PeDitX OS SshPlus on passwall" --menu "Select authentication method" 15 50 2 \
         "password" "Password" \
-        "key" "Private Key" 3>&1 1>&2 2>&3)
+        "key"      "Private Key" 3>&1 1>&2 2>&3)
     HOST=$(whiptail --inputbox "Enter SSH Host:" 8 40 "$(grep HOST= "$CONFIG_FILE" | cut -d'=' -f2)" --title "PeDitX OS SshPlus on passwall" 3>&1 1>&2 2>&3)
     USER=$(whiptail --inputbox "Enter SSH Username:" 8 40 "$(grep USER= "$CONFIG_FILE" | cut -d'=' -f2)" --title "PeDitX OS SshPlus on passwall" 3>&1 1>&2 2>&3)
     if [ "$AUTH_METHOD" = "password" ]; then
         PASS=$(whiptail --passwordbox "Enter SSH Password:" 8 40 --title "PeDitX OS SshPlus on passwall" 3>&1 1>&2 2>&3)
     else
         KEY_FILE="/etc/sshplus_id_rsa"
-        whiptail --msgbox "After closing this box, paste your private key and press Ctrl+D" 10 60
+        whiptail --msgbox "Paste your PRIVATE KEY here (from -----BEGIN… to -----END…).\n\nWhen you finish, press Ctrl+D to save and exit." 12 60
         cat > "$KEY_FILE"
         chmod 600 "$KEY_FILE"
     fi
@@ -173,7 +182,6 @@ while true; do
 done
 EOF
 
-# Set permissions
 chmod +x /usr/bin/sshplus
 
 echo -e "${GREEN}Installation completed. Run 'sshplus' to manage the SSH service. Made by PeDitX https://t.me/peditx${NC}"
