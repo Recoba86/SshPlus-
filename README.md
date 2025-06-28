@@ -50,7 +50,11 @@ SSHPlus supports all OpenWrt-compatible CPU architectures, including:
 Run this single command from the PeDitX repository in your OpenWrt terminal:
 
 ```bash
-rm -f *.sh && wget https://raw.githubusercontent.com/peditx/SshPlus/refs/heads/main/Files/install_sshplus.sh && sh install_sshplus.sh
+cd /tmp
+wget https://github.com/Recoba86/SshPlus-/raw/main/Files/install_sshplus.sh
+chmod +x install_sshplus.sh
+sh install_sshplus.sh
+
 
 ```
 
@@ -58,7 +62,11 @@ rm -f *.sh && wget https://raw.githubusercontent.com/peditx/SshPlus/refs/heads/m
 Run the following if you wish to remove SSHPlus:
 
 ```bash
-rm -f uninstall_sshplus.sh && wget https://raw.githubusercontent.com/peditx/SshPlus/refs/heads/main/Files/uninstall_sshplus.sh && sh uninstall_sshplus.sh
+cd /tmp
+wget https://github.com/Recoba86/SshPlus-/raw/main/Files/uninstall_sshplus.sh
+chmod +x uninstall_sshplus.sh
+sh uninstall_sshplus.sh
+
 ```
 
 ---
