@@ -6,7 +6,6 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 echo -e "\e[33mStopping and removing SSHPlus service...\e[0m"
-
 /etc/init.d/sshplus stop 2>/dev/null
 /etc/init.d/sshplus disable 2>/dev/null
 rm -f /etc/init.d/sshplus
@@ -25,4 +24,4 @@ opkg install dropbear 2>/dev/null
 /etc/init.d/dropbear enable 2>/dev/null
 /etc/init.d/dropbear start 2>/dev/null
 
-echo -e "\e[32mSshPlus and related files have been completely removed!\e[0m"
+echo -e "\e[32mSSHPlus and related files have been completely removed!${NC}"
