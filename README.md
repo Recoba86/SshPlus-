@@ -1,133 +1,99 @@
-# SSHPlus Manager for OpenWrt
-[![Visitor Badge](https://img.shields.io/badge/Chat%20on-Telegram-blue.svg)](https://t.me/peditx) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+# SshPlus Luci UI (OpenWrt Smart SSH Tunnel)
 
-[**English**](README.md) | [**فارسی**](README_fa.md) | [**简体中文**](README-ch.md) | [**Русский**](README_ru.md)
-
-![Banner](https://raw.githubusercontent.com/peditx/luci-theme-peditx/refs/heads/main/luasrc/brand.png)
-
-**The first comprehensive SSH tunneling solution natively integrated with PassWall on OpenWrt systems**
+مدیریت و مانیتور تونل SSH و ساکس ۵ به صورت گرافیکی روی OpenWrt.
+راه‌اندازی سریع تونل امن، کنترل، مانیتور و اتصال مجدد خودکار — همه از طریق رابط وب LuCI!
 
 ---
 
-## 🚀 Features
-- 🔐 OpenSSH Server/Client integration
-- 🌐 SOCKS5 Proxy (Port 8089) creation
-- 🛡️ Full PassWall/PassWall2 integration
-- 📊 Real-time connection monitoring
-- 📜 User-friendly CLI management interface
-- 🔄 Auto-reconnect functionality
-- 🧩 Compatible with all OpenWrt-supported architectures
+## معرفی کوتاه
+
+این افزونه به شما امکان می‌دهد با چند کلیک:
+
+* تونل امن SSH ایجاد کنید و آی‌پی خارجی بگیرید
+* وضعیت و مدت اتصال را ببینید
+* هر وقت تونل قطع شد، خودش دوباره وصل می‌شود
+* همه‌چیز را در LuCI (پنل OpenWrt) مدیریت کنید
+* حذف کامل با یک دستور
 
 ---
 
+## قابلیت‌ها
 
-## ⚙️ Supported Architectures
-SSHPlus supports all OpenWrt-compatible CPU architectures, including:
-
-- `x86_64`  
-- `arm_cortex-a15+neon-vfpv4`  
-- `mipsel_24kc`  
-- `aarch64_cortex-a53`  
-- `mips_24kc`  
-- `arm_cortex-a7_neon-vfpv4`  
-- `arm_cortex-a9`  
-- `arm_cortex-a53_neon-vfpv4`  
-- `arm_cortex-a8_neon`  
-- `arm_fa526`  
-- `arm_mpcore`  
-- `arm_xscale`  
-- `powerpc_464fp`  
-- `powerpc_8540`  
-- `mips64_octeonplus`  
-- `mips64_octeon`  
-- `i386_pentium4`  
-
-*Full compatibility list available in [OpenWrt documentation](https://openwrt.org/docs/guide-user/additional-software/package-installation)*
+* نصب و حذف خودکار با یک دستور
+* کنترل تونل SSH (Start / Stop / Config) از داخل OpenWrt
+* نمایش آی‌پی خروجی سرور و مدت اتصال
+* Watchdog خودکار (اتصال مجدد در صورت قطع شدن)
+* کاملاً رسپانسیو (موبایل و دسکتاپ)
+* Kill هوشمند پراسس‌های قدیمی پیش از اتصال جدید
+* مناسب برای استفاده با Clash / Passwall و سایر کلاینت‌های socks5
+* مستقل و قابل شخصی‌سازی
 
 ---
 
-## 📥 Installation
-Run this single command from the PeDitX repository in your OpenWrt terminal:
+## پیش‌نیازها
 
-```bash
-cd /tmp
-wget https://github.com/Recoba86/SshPlus-/raw/main/Files/install_sshplus.sh
-chmod +x install_sshplus.sh
-sh install_sshplus.sh
+* OpenWrt با LuCI
+* نصب پکیج‌های زیر:
 
+  * luci
+  * screen
+  * openssh-client
+  * (در صورت نیاز به پسورد: sshpass)
+* دسترسی root
 
+---
+
+## نصب سریع
+
+۱. یکی از دستورات زیر را در ترمینال روتر وارد کنید:
+
+```sh
+wget -O - https://raw.githubusercontent.com/Recoba86/SshPlus-Luci-UI/main/Files/install_sshplus.sh | sh
 ```
 
-### Uninstall
-Run the following if you wish to remove SSHPlus:
+یا
 
-```bash
-cd /tmp
-wget https://github.com/Recoba86/SshPlus-/raw/main/Files/uninstall_sshplus.sh
-chmod +x uninstall_sshplus.sh
-sh uninstall_sshplus.sh
+```sh
+curl -fsSL https://raw.githubusercontent.com/Recoba86/SshPlus-Luci-UI/main/Files/install_sshplus.sh | sh
+```
 
+۲. پس از نصب، از طریق مسیر **Services > SSHPlus** در رابط وب OpenWrt وارد شوید و کانفیگ را انجام دهید.
+
+---
+
+## حذف کامل (Full Uninstall)
+
+برای حذف کامل افزونه، فایل‌ها و اسکریپت watchdog از دستورات زیر استفاده کنید:
+
+```sh
+wget -O - https://raw.githubusercontent.com/Recoba86/SshPlus-Luci-UI/main/Files/uninstall_sshplus.sh | sh
+```
+
+یا
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/Recoba86/SshPlus-Luci-UI/main/Files/uninstall_sshplus.sh | sh
 ```
 
 ---
 
-## ✨ Key Capabilities
-1. **Secure SSH Tunneling**  
-   Create encrypted SOCKS5 proxies with military-grade AES-256-GCM encryption
+## نکات امنیتی و مهم
 
-2. **PassWall Integration**  
-   Direct integration with popular OpenWrt proxy solutions
-
-3. **Connection Management**  
-   ```
-   sshplus  # Launch management interface
-   ```
-   - Start/Stop tunnels
-   - Edit configurations
-   - Monitor active connections
-
-4. **Auto-Service Creation**
-   Persistent connections survive reboots via init.d service
-5. **Flexible Authentication**
-   Choose between password or private key when connecting
+* توصیه می‌شود همیشه از کلید خصوصی امن استفاده کنید
+* پورت سرور SSH را به دلایل امنیتی تغییر دهید
+* این افزونه هیچ اطلاعاتی از دستگاه شما خارج نمی‌کند
 
 ---
 
-## 📜 About This Innovation
-**SSHPlus** represents the first native implementation of:
-- Full OpenSSH integration in OpenWrt
-- CLI-based SSH tunnel management
-- Automatic PassWall configuration
-- Service persistence through init.d
+## درباره پروژه
 
-*Developed specifically for OpenWrt's unique environment*
+این افزونه نسخه توسعه‌یافته [پروژه اصلی SshPlus](https://github.com/peditx/SshPlus) است
+و امکانات رابط گرافیکی، Watchdog و نصب/حذف آسان به آن اضافه شده است.
 
 ---
 
-## 🔧 Requirements
-- OpenWrt 21.02 or newer
-- 8MB+ free storage
-- Active internet connection
+## پشتیبانی
+
+برای سوال، رفع اشکال یا پیشنهاد، Issue جدید در همین گیت‌هاب ثبت کنید.
 
 ---
-
-## 📬 Support & Contact
-**Telegram Channel:**  
-[https://t.me/peditx](https://t.me/peditx)
-
----
-
-## 📄 License
-**Copyright © 2025 PeDitX**  
-*This project is licensed under the GPL-3.0 License*
-
----
-
-## 🙏 Special Thanks
-- Inspired by [EZpasswall](https://github.com/peditx/EZpasswall)
-- Built for the OpenWrt community
-- Powered by PeDitX
-
-
-
-© PeDitX 2025 | Telegram: [@peditx](https://t.me/peditx)
