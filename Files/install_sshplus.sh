@@ -13,7 +13,7 @@ function index()
     if not nixio.fs.access("/etc/init.d/sshplus") then
         return
     end
-    entry({"admin", "services", "sshplus"}, cbi("sshplus"), "SSHPlus", 90).dependent = true
+    entry({"admin", "services", "sshplus"}, form("sshplus"), "SSHPlus", 90).dependent = true
     entry({"admin", "services", "sshplus_statuspage"}, template("sshplus_statuspage"), "وضعیت SSHPlus", 91).dependent = true
     entry({"admin", "services", "sshplus_status_api"}, call("action_status")).leaf = true
     entry({"admin", "services", "sshplus_toggle"}, call("action_toggle")).leaf = true
