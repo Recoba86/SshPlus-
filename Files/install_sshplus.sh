@@ -462,6 +462,41 @@ echo '* * * * * /root/sshplus-watchdog.sh' >> /etc/crontabs/root
 # ۹. فایل کانفیگ اولیه اگر وجود ندارد
 [ -f /etc/sshplus.conf ] || echo -e "HOST=\nUSER=\nPORT=\nAUTH_METHOD=password\nPASS=\nKEY_FILE=" > /etc/sshplus.conf
 
+# اضافه کردن Node به Passwall یا Passwall2 (اختیاری)
+if service passwall2 status > /dev/null 2>&1; then
+    uci set passwall2.SshPlus=nodes
+    uci set passwall2.SshPlus.remarks='ssh-plus'
+    uci set passwall2.SshPlus.type='Xray'
+    uci set passwall2.SshPlus.protocol='socks'
+    uci set passwall2.SshPlus.server='127.0.0.1'
+    uci set passwall2.SshPlus.port='8089'
+    uci set passwall2.SshPlus.address='127.0.0.1'
+    uci set passwall2.SshPlus.tls='0'
+    uci set passwall2.SshPlus.transport='tcp'
+    uci set passwall2.SshPlus.tcp_guise='none'
+    uci set passwall2.SshPlus.tcpMptcp='0'
+    uci set passwall2.SshPlus.tcpNoDelay='0'
+    uci commit passwall2
+    echo "Passwall2 configuration updated successfully."
+elif service passwall status > /dev/null 2>&1; then
+    uci set passwall.SshPlus=nodes
+    uci set passwall.SshPlus.remarks='Ssh-Plus'
+    uci set passwall.SshPlus.type='Xray'
+    uci set passwall.SshPlus.protocol='socks'
+    uci set passwall.SshPlus.server='127.0.0.1'
+    uci set passwall.SshPlus.port='8089'
+    uci set passwall.SshPlus.address='127.0.0.1'
+    uci set passwall.SshPlus.tls='0'
+    uci set passwall.SshPlus.transport='tcp'
+    uci set passwall.SshPlus.tcp_guise='none'
+    uci set passwall.SshPlus.tcpMptcp='0'
+    uci set passwall.SshPlus.tcpNoDelay='0'
+    uci commit passwall
+    echo "Passwall configuration updated successfully."
+else
+    echo "Neither Passwall nor Passwall2 is installed. Skipping configuration."
+fi
+
 echo
 echo "✅ نصب SSHPlus و UI کامل شد!"
 echo "از طریق Services > SSHPlus در پنل OpenWrt در دسترس است."
